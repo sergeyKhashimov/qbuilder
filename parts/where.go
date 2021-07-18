@@ -2,7 +2,7 @@ package parts
 
 import (
 	"fmt"
-	expression2 "github.com/fortuwealth/backend/pkg/db/qbuilder/parts/expression"
+	expression2 "github.com/sergeyKhashimov/qbuilder/parts/expression"
 	"strings"
 )
 

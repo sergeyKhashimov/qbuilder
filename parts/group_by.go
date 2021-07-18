@@ -2,12 +2,12 @@ package parts
 
 import (
 	"fmt"
-	expression2 "github.com/fortuwealth/backend/pkg/db/qbuilder/parts/expression"
+	"github.com/sergeyKhashimov/qbuilder/parts/expression"
 	"strings"
 )
 
 type GroupBy struct {
-	GroupBy []expression2.RawExpression
+	GroupBy []expression.RawExpression
 }
 
 func (p GroupBy) String() string {
@@ -18,14 +18,14 @@ func (p GroupBy) String() string {
 }
 
 func (p *GroupBy) Set(expr string) {
-	p.GroupBy = []expression2.RawExpression{{Expression: expr}}
+	p.GroupBy = []expression.RawExpression{{Expression: expr}}
 }
 
 func (p *GroupBy) Add(expr string) {
-	p.GroupBy = append(p.GroupBy, expression2.RawExpression{Expression: expr})
+	p.GroupBy = append(p.GroupBy, expression.RawExpression{Expression: expr})
 }
 
-func joinGroupByExpressions(expressions []expression2.RawExpression) string {
+func joinGroupByExpressions(expressions []expression.RawExpression) string {
 	var res []string
 	for _, expr := range expressions {
 		res = append(res, expr.String())

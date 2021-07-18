@@ -2,8 +2,8 @@ package qbuilder
 
 import (
 	"fmt"
-	"github.com/fortuwealth/backend/pkg/db/qbuilder/parts"
-	"github.com/fortuwealth/backend/pkg/db/qbuilder/parts/expression"
+	"github.com/sergeyKhashimov/qbuilder/parts"
+	"github.com/sergeyKhashimov/qbuilder/parts/expression"
 	"strings"
 )
 

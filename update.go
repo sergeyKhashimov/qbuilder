@@ -1,7 +1,7 @@
 package qbuilder
 
 import (
-	parts2 "github.com/fortuwealth/backend/pkg/db/qbuilder/parts"
+	parts2 "github.com/sergeyKhashimov/qbuilder/parts"
 	"strings"
 )
 
