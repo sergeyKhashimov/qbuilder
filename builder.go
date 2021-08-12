@@ -4,6 +4,10 @@ import (
 	"fmt"
 )
 
+type BuilderInterface interface {
+	ToSQL() string
+}
+
 type builder struct {
 	parameters ParameterBag
 }

@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type updateBuilder struct {
+type UpdateBuilder struct {
 	builder
 	update parts2.Update
 	set    parts2.Set
@@ -13,22 +13,22 @@ type updateBuilder struct {
 	where  parts2.Where
 }
 
-func (u *updateBuilder) Update(rel string) *updateBuilder {
+func (u *UpdateBuilder) Update(rel string) *UpdateBuilder {
 	u.update = parts2.Update{Relation: rel}
 	return u
 }
 
-func (u *updateBuilder) From(rel string) *updateBuilder {
+func (u *UpdateBuilder) From(rel string) *UpdateBuilder {
 	u.from = parts2.From{Relation: rel}
 	return u
 }
 
-func (u *updateBuilder) Set(column string, value string) *updateBuilder {
+func (u *UpdateBuilder) Set(column string, value string) *UpdateBuilder {
 	u.set.Add(column, value)
 	return u
 }
 
-func (u *updateBuilder) Where(expr... string) *updateBuilder {
+func (u *UpdateBuilder) Where(expr... string) *UpdateBuilder {
 	u.where.Reset()
 	for _, e := range expr {
 		u.where.Add(e)
@@ -36,29 +36,29 @@ func (u *updateBuilder) Where(expr... string) *updateBuilder {
 	return u
 }
 
-func (u *updateBuilder) AndWhere(expr string) *updateBuilder {
+func (u *UpdateBuilder) AndWhere(expr string) *UpdateBuilder {
 	u.where.Add(expr)
 	return u
 }
 
-func (u *updateBuilder) SetParameter(name string, value interface{}) *updateBuilder {
+func (u *UpdateBuilder) SetParameter(name string, value interface{}) *UpdateBuilder {
 	u.parameters.Set(name, value)
 	return u
 }
 
-func (u *updateBuilder) SetParameters(params map[string]interface{}) *updateBuilder {
+func (u *UpdateBuilder) SetParameters(params map[string]interface{}) *UpdateBuilder {
 	for name, value := range params {
 		u.parameters.Set(name, value)
 	}
 	return u
 }
 
-func (u *updateBuilder) RemoveParameter(name string) *updateBuilder {
+func (u *UpdateBuilder) RemoveParameter(name string) *UpdateBuilder {
 	u.parameters.Remove(name)
 	return u
 }
 
-func (u *updateBuilder) ToSQL() string {
+func (u *UpdateBuilder) ToSQL() string {
 	expressions := []string{
 		u.update.String(),
 		u.set.String(),

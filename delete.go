@@ -5,24 +5,24 @@ import (
 	"strings"
 )
 
-type deleteBuilder struct {
+type DeleteBuilder struct {
 	builder
 	delete parts2.Delete
 	using  parts2.Using
 	where  parts2.Where
 }
 
-func (d *deleteBuilder) Delete(rel string) *deleteBuilder {
+func (d *DeleteBuilder) Delete(rel string) *DeleteBuilder {
 	d.delete = parts2.Delete{Relation: rel}
 	return d
 }
 
-func (d *deleteBuilder) Using(rel string) *deleteBuilder {
+func (d *DeleteBuilder) Using(rel string) *DeleteBuilder {
 	d.using = parts2.Using{Relation: rel}
 	return d
 }
 
-func (d *deleteBuilder) Where(expr... string) *deleteBuilder {
+func (d *DeleteBuilder) Where(expr... string) *DeleteBuilder {
 	d.where.Reset()
 	for _, e := range expr {
 		d.where.Add(e)
@@ -30,29 +30,29 @@ func (d *deleteBuilder) Where(expr... string) *deleteBuilder {
 	return d
 }
 
-func (d *deleteBuilder) AndWhere(expr string) *deleteBuilder {
+func (d *DeleteBuilder) AndWhere(expr string) *DeleteBuilder {
 	d.where.Add(expr)
 	return d
 
 }
-func (d *deleteBuilder) SetParameter(name string, value interface{}) *deleteBuilder {
+func (d *DeleteBuilder) SetParameter(name string, value interface{}) *DeleteBuilder {
 	d.parameters.Set(name, value)
 	return d
 }
 
-func (d *deleteBuilder) SetParameters(params map[string]interface{}) *deleteBuilder {
+func (d *DeleteBuilder) SetParameters(params map[string]interface{}) *DeleteBuilder {
 	for name, value := range params {
 		d.parameters.Set(name, value)
 	}
 	return d
 }
 
-func (d *deleteBuilder) RemoveParameter(name string) *deleteBuilder {
+func (d *DeleteBuilder) RemoveParameter(name string) *DeleteBuilder {
 	d.parameters.Remove(name)
 	return d
 }
 
-func (d *deleteBuilder) ToSQL() string {
+func (d *DeleteBuilder) ToSQL() string {
 	expressions := []string{
 		d.delete.String(),
 		d.using.String(),

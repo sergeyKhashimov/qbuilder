@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-type selectBuilder struct {
+type SelectBuilder struct {
 	builder
 	sel      parts.Select
 	from     parts.From
@@ -24,45 +24,45 @@ type selectBuilder struct {
 	rWrap    string
 }
 
-func (s *selectBuilder) Select(sel ...string) *selectBuilder {
+func (s *SelectBuilder) Select(sel ...string) *SelectBuilder {
 	for _, expr := range sel {
 		s.sel.Add(expr)
 	}
 	return s
 }
 
-func (s *selectBuilder) SubSelect(sel string) *selectBuilder {
+func (s *SelectBuilder) SubSelect(sel string) *SelectBuilder {
 	s.Select(sel)
 	s.rWrap, s.lWrap = "(", ")"
 	return s
 }
 
-func (s *selectBuilder) From(rel string) *selectBuilder {
+func (s *SelectBuilder) From(rel string) *SelectBuilder {
 	s.from = parts.From{Relation: rel}
 	return s
 }
 
-func (s *selectBuilder) Alias(alias string) *selectBuilder {
+func (s *SelectBuilder) Alias(alias string) *SelectBuilder {
 	s.alias = parts.Alias{Alias: alias}
 	return s
 }
 
-func (s *selectBuilder) InnerJoin(rel string, alias string, cond string) *selectBuilder {
+func (s *SelectBuilder) InnerJoin(rel string, alias string, cond string) *SelectBuilder {
 	s.join.Add(rel, parts.Alias{Alias: alias}, cond, expression.DirectionInner)
 	return s
 }
 
-func (s *selectBuilder) LeftJoin(rel string, alias string, cond string) *selectBuilder {
+func (s *SelectBuilder) LeftJoin(rel string, alias string, cond string) *SelectBuilder {
 	s.join.Add(rel, parts.Alias{Alias: alias}, cond, expression.DirectionLeft)
 	return s
 }
 
-func (s *selectBuilder) RightJoin(rel string, alias string, cond string) *selectBuilder {
+func (s *SelectBuilder) RightJoin(rel string, alias string, cond string) *SelectBuilder {
 	s.join.Add(rel, parts.Alias{Alias: alias}, cond, expression.DirectionRight)
 	return s
 }
 
-func (s *selectBuilder) Where(expr ...string) *selectBuilder {
+func (s *SelectBuilder) Where(expr ...string) *SelectBuilder {
 	s.where.Reset()
 	for _, e := range expr {
 		s.where.Add(e)
@@ -70,42 +70,46 @@ func (s *selectBuilder) Where(expr ...string) *selectBuilder {
 	return s
 }
 
-func (s *selectBuilder) AndWhere(expr string) *selectBuilder {
+func (s *SelectBuilder) GetWhere() *parts.Where {
+	return &s.where
+}
+
+func (s *SelectBuilder) AndWhere(expr string) *SelectBuilder {
 	s.where.Add(expr)
 	return s
 }
 
-func (s *selectBuilder) WithLock() *selectBuilder {
+func (s *SelectBuilder) WithLock() *SelectBuilder {
 	s.withLock = "FOR UPDATE"
 	return s
 }
 
-func (s *selectBuilder) Offset(offset uint32) *selectBuilder {
+func (s *SelectBuilder) Offset(offset uint32) *SelectBuilder {
 	s.offset = parts.Offset{Offset: offset}
 	return s
 }
 
-func (s *selectBuilder) Limit(limit uint32) *selectBuilder {
+func (s *SelectBuilder) Limit(limit uint32) *SelectBuilder {
 	s.limit = parts.Limit{Limit: limit}
 	return s
 }
 
-func (s *selectBuilder) Having(expr string) *selectBuilder {
+func (s *SelectBuilder) Having(expr string) *SelectBuilder {
 	s.having = parts.Having{Having: expr}
 	return s
 }
 
-func (s *selectBuilder) GroupBy(expr string) *selectBuilder {
+func (s *SelectBuilder) GroupBy(expr string) *SelectBuilder {
 	s.groupBy.Set(expr)
 	return s
 }
 
-func (s *selectBuilder) AddGroupBy(expr string) *selectBuilder {
+func (s *SelectBuilder) AddGroupBy(expr string) *SelectBuilder {
 	s.groupBy.Set(expr)
 	return s
 }
 
-func (s *selectBuilder) OrderBy(sort Sort) *selectBuilder {
+func (s *SelectBuilder) OrderBy(sort Sort) *SelectBuilder {
 	if sort != nil {
 		for expr, direction := range sort {
 			s.orderBy.Add(expr, direction.String())
@@ -114,29 +118,29 @@ func (s *selectBuilder) OrderBy(sort Sort) *selectBuilder {
 	return s
 }
 
-func (s *selectBuilder) AddOrderBy(expr string, direction SortDirection) *selectBuilder {
+func (s *SelectBuilder) AddOrderBy(expr string, direction SortDirection) *SelectBuilder {
 	s.orderBy.Add(expr, direction.String())
 	return s
 }
 
-func (s *selectBuilder) SetParameter(name string, value interface{}) *selectBuilder {
+func (s *SelectBuilder) SetParameter(name string, value interface{}) *SelectBuilder {
 	s.parameters.Set(name, value)
 	return s
 }
 
-func (s *selectBuilder) SetParameters(params map[string]interface{}) *selectBuilder {
+func (s *SelectBuilder) SetParameters(params map[string]interface{}) *SelectBuilder {
 	for name, value := range params {
 		s.parameters.Set(name, value)
 	}
 	return s
 }
 
-func (s *selectBuilder) RemoveParameter(name string) *selectBuilder {
+func (s *SelectBuilder) RemoveParameter(name string) *SelectBuilder {
 	s.parameters.Remove(name)
 	return s
 }
 
-func (s *selectBuilder) ToSQL() string {
+func (s *SelectBuilder) ToSQL() string {
 	expr := []string{
 		s.sel.String(),
 		s.from.String(),

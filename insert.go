@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type insertBuilder struct {
+type InsertBuilder struct {
 	builder
 	insert    parts2.Insert
 	columns   parts2.Columns
@@ -13,48 +13,48 @@ type insertBuilder struct {
 	returning parts2.Returning
 }
 
-func (i *insertBuilder) Insert(into string) *insertBuilder {
+func (i *InsertBuilder) Insert(into string) *InsertBuilder {
 	i.insert = parts2.Insert{Relation: into}
 	return i
 }
 
-func (i *insertBuilder) Value(val string) *insertBuilder {
+func (i *InsertBuilder) Value(val string) *InsertBuilder {
 	i.values.Add(val)
 	return i
 }
 
-func (i *insertBuilder) Columns(alias ...string) *insertBuilder {
+func (i *InsertBuilder) Columns(alias ...string) *InsertBuilder {
 	for _, a := range alias {
 		i.columns.Add(a)
 	}
 	return i
 }
 
-func (i *insertBuilder) Returning(alias ...string) *insertBuilder {
+func (i *InsertBuilder) Returning(alias ...string) *InsertBuilder {
 	for _, a := range alias {
 		i.returning.Add(a)
 	}
 	return i
 }
 
-func (i *insertBuilder) SetParameter(name string, value interface{}) *insertBuilder {
+func (i *InsertBuilder) SetParameter(name string, value interface{}) *InsertBuilder {
 	i.parameters.Set(name, value)
 	return i
 }
 
-func (i *insertBuilder) SetParameters(params map[string]interface{}) *insertBuilder {
+func (i *InsertBuilder) SetParameters(params map[string]interface{}) *InsertBuilder {
 	for name, value := range params {
 		i.parameters.Set(name, value)
 	}
 	return i
 }
 
-func (i *insertBuilder) RemoveParameter(name string) *insertBuilder {
+func (i *InsertBuilder) RemoveParameter(name string) *InsertBuilder {
 	i.parameters.Remove(name)
 	return i
 }
 
-func (i *insertBuilder) ToSQL() string {
+func (i *InsertBuilder) ToSQL() string {
 	expressions := []string{
 		i.insert.String(),
 		i.columns.String(),
