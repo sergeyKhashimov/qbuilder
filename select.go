@@ -25,6 +25,7 @@ type SelectBuilder struct {
 }
 
 func (s *SelectBuilder) Select(sel ...string) *SelectBuilder {
+	s.sel.Reset()
 	for _, expr := range sel {
 		s.sel.Add(expr)
 	}
