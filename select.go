@@ -2,8 +2,8 @@ package qbuilder
 
 import (
 	"fmt"
-	"github.com/sergeyKhashimov/qbuilder/parts"
-	"github.com/sergeyKhashimov/qbuilder/parts/expression"
+	"github.com/slmder/qbuilder/parts"
+	"github.com/slmder/qbuilder/parts/expression"
 	"strings"
 )
 

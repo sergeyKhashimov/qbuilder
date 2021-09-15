@@ -2,7 +2,7 @@ package parts
 
 import (
 	"fmt"
-	"github.com/sergeyKhashimov/qbuilder/parts/expression"
+	"github.com/slmder/qbuilder/parts/expression"
 	"strings"
 )
 

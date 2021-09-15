@@ -1,7 +1,7 @@
 package parts
 
 import (
-	expression2 "github.com/sergeyKhashimov/qbuilder/parts/expression"
+	expression2 "github.com/slmder/qbuilder/parts/expression"
 	"strings"
 )
 

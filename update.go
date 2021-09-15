@@ -1,7 +1,7 @@
 package qbuilder
 
 import (
-	parts2 "github.com/sergeyKhashimov/qbuilder/parts"
+	parts2 "github.com/slmder/qbuilder/parts"
 	"strings"
 )
 
