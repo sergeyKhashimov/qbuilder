@@ -28,7 +28,14 @@ func (u *UpdateBuilder) Set(column string, value string) *UpdateBuilder {
 	return u
 }
 
-func (u *UpdateBuilder) Where(expr... string) *UpdateBuilder {
+func (u *UpdateBuilder) SetMap(values map[string]string) *UpdateBuilder {
+	for column, value := range values {
+		u.Set(column, value)
+	}
+	return u
+}
+
+func (u *UpdateBuilder) Where(expr ...string) *UpdateBuilder {
 	u.where.Reset()
 	for _, e := range expr {
 		u.where.Add(e)

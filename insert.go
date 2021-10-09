@@ -18,6 +18,14 @@ func (i *InsertBuilder) Insert(into string) *InsertBuilder {
 	return i
 }
 
+func (i *InsertBuilder) ColVal(colVal map[string]string) *InsertBuilder {
+	for column, value := range colVal {
+		i.columns.Add(column)
+		i.values.Add(value)
+	}
+	return i
+}
+
 func (i *InsertBuilder) Value(val string) *InsertBuilder {
 	i.values.Add(val)
 	return i
