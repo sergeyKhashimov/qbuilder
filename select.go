@@ -32,6 +32,21 @@ func (s *SelectBuilder) Select(sel ...string) *SelectBuilder {
 	return s
 }
 
+func (s *SelectBuilder) Selectf(format string, args ...interface{}) *SelectBuilder {
+	s.Select(fmt.Sprintf(format, args...))
+	return s
+}
+
+func (s *SelectBuilder) AddSelect(sel string) *SelectBuilder {
+	s.sel.Add(sel)
+	return s
+}
+
+func (s *SelectBuilder) AddSelectf(format string, args ...interface{}) *SelectBuilder {
+	s.AddSelect(fmt.Sprintf(format, args...))
+	return s
+}
+
 func (s *SelectBuilder) SubSelect(sel string) *SelectBuilder {
 	s.Select(sel)
 	s.rWrap, s.lWrap = "(", ")"
