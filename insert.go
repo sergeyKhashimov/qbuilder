@@ -23,7 +23,7 @@ func (i *InsertBuilder) Row(set map[string]string) *InsertBuilder {
 	var value string
 	for column, val := range set {
 		i.columns.Add(column)
-		value = fmt.Sprintf("%s,%s", value, strings.Trim(val, ", "))
+		value = strings.Trim(fmt.Sprintf("%s,%s", value, strings.Trim(val, ", ")), ", ")
 	}
 	i.values.Add(value)
 	return i
