@@ -14,6 +14,7 @@ type SelectBuilder struct {
 	alias    parts.Alias
 	join     parts.Join
 	where    parts.Where
+	orWhere  parts.OrWhere
 	limit    parts.Limit
 	offset   parts.Offset
 	having   parts.Having
@@ -78,6 +79,10 @@ func (s *SelectBuilder) RightJoin(rel string, alias string, cond string) *Select
 	return s
 }
 
+func (s *SelectBuilder) Join(rel string, alias string, cond string) *SelectBuilder {
+	return s.InnerJoin(rel, alias, cond)
+}
+
 func (s *SelectBuilder) Where(expr ...string) *SelectBuilder {
 	s.where.Reset()
 	for _, e := range expr {
@@ -86,12 +91,26 @@ func (s *SelectBuilder) Where(expr ...string) *SelectBuilder {
 	return s
 }
 
+func (s *SelectBuilder) Wheref(format string, a ...interface{}) *SelectBuilder {
+	return s.Where(fmt.Sprintf(format, a...))
+}
+
 func (s *SelectBuilder) GetWhere() *parts.Where {
 	return &s.where
 }
 
 func (s *SelectBuilder) AndWhere(expr string) *SelectBuilder {
 	s.where.Add(expr)
+	return s
+}
+
+func (s *SelectBuilder) AndWheref(format string, a ...interface{}) *SelectBuilder {
+	s.AndWhere(fmt.Sprintf(format, a...))
+	return s
+}
+
+func (s *SelectBuilder) OrWhere(expr string) *SelectBuilder {
+	s.orWhere.Add(expr)
 	return s
 }
 
@@ -163,6 +182,7 @@ func (s *SelectBuilder) ToSQL() string {
 		s.alias.String(),
 		s.join.String(),
 		s.where.String(),
+		s.orWhere.String(),
 		s.groupBy.String(),
 		s.having.String(),
 		s.orderBy.String(),

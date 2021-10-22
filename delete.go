@@ -1,6 +1,7 @@
 package qbuilder
 
 import (
+	"fmt"
 	parts2 "github.com/slmder/qbuilder/parts"
 	"strings"
 )
@@ -30,11 +31,20 @@ func (d *DeleteBuilder) Where(expr... string) *DeleteBuilder {
 	return d
 }
 
+func (d *DeleteBuilder) Wheref(format string, a ...interface{}) *DeleteBuilder {
+	return d.Where(fmt.Sprintf(format, a...))
+}
+
 func (d *DeleteBuilder) AndWhere(expr string) *DeleteBuilder {
 	d.where.Add(expr)
 	return d
-
 }
+
+func (d *DeleteBuilder) AndWheref(format string, a ...interface{}) *DeleteBuilder {
+	d.AndWhere(fmt.Sprintf(format, a...))
+	return d
+}
+
 func (d *DeleteBuilder) SetParameter(name string, value interface{}) *DeleteBuilder {
 	d.parameters.Set(name, value)
 	return d

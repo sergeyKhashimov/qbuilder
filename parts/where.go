@@ -30,5 +30,8 @@ func joinWhereExpressions(expressions []expression2.RawExpression) string {
 	for _, expr := range expressions {
 		res = append(res, fmt.Sprintf("(%s)", strings.Trim(expr.String(), " ")))
 	}
+	if len(expressions) > 1 {
+		return fmt.Sprintf("(%s)", strings.Join(res, " AND "))
+	}
 	return strings.Join(res, " AND ")
 }

@@ -1,6 +1,7 @@
 package qbuilder
 
 import (
+	"fmt"
 	parts2 "github.com/slmder/qbuilder/parts"
 	"strings"
 )
@@ -43,8 +44,17 @@ func (u *UpdateBuilder) Where(expr ...string) *UpdateBuilder {
 	return u
 }
 
+func (u *UpdateBuilder) Wheref(format string, a ...interface{}) *UpdateBuilder {
+	return u.Where(fmt.Sprintf(format, a...))
+}
+
 func (u *UpdateBuilder) AndWhere(expr string) *UpdateBuilder {
 	u.where.Add(expr)
+	return u
+}
+
+func (u *UpdateBuilder) AndWheref(format string, a ...interface{}) *UpdateBuilder {
+	u.AndWhere(fmt.Sprintf(format, a...))
 	return u
 }
 
