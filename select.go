@@ -119,7 +119,7 @@ func (s *SelectBuilder) WithLock() *SelectBuilder {
 	return s
 }
 
-func (s *SelectBuilder) ForUpdate(mode RowLevelLockMode) *SelectBuilder {
+func (s *SelectBuilder) For(mode RowLevelLockMode) *SelectBuilder {
 	s.forClause = fmt.Sprintf("FOR %s", mode)
 	return s
 }
