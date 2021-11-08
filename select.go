@@ -9,20 +9,20 @@ import (
 
 type SelectBuilder struct {
 	builder
-	sel      parts.Select
-	from     parts.From
-	alias    parts.Alias
-	join     parts.Join
-	where    parts.Where
-	orWhere  parts.OrWhere
-	limit    parts.Limit
-	offset   parts.Offset
-	having   parts.Having
-	groupBy  parts.GroupBy
-	orderBy  parts.OrderBy
-	withLock string
-	lWrap    string
-	rWrap    string
+	sel       parts.Select
+	from      parts.From
+	alias     parts.Alias
+	join      parts.Join
+	where     parts.Where
+	orWhere   parts.OrWhere
+	limit     parts.Limit
+	offset    parts.Offset
+	having    parts.Having
+	groupBy   parts.GroupBy
+	orderBy   parts.OrderBy
+	forClause string
+	lWrap     string
+	rWrap     string
 }
 
 func (s *SelectBuilder) Select(sel ...string) *SelectBuilder {
@@ -115,7 +115,12 @@ func (s *SelectBuilder) OrWhere(expr string) *SelectBuilder {
 }
 
 func (s *SelectBuilder) WithLock() *SelectBuilder {
-	s.withLock = "FOR UPDATE"
+	s.forClause = "FOR UPDATE"
+	return s
+}
+
+func (s *SelectBuilder) ForUpdate(mode RowLevelLockMode) *SelectBuilder {
+	s.forClause = fmt.Sprintf("FOR %s", mode)
 	return s
 }
 
@@ -188,7 +193,7 @@ func (s *SelectBuilder) ToSQL() string {
 		s.orderBy.String(),
 		s.limit.String(),
 		s.offset.String(),
-		s.withLock,
+		s.forClause,
 	}
 	return fmt.Sprintf("%s%s%s", s.lWrap, strings.Trim(strings.Join(expr, " "), " "), s.rWrap)
 }

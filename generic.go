@@ -2,6 +2,21 @@ package qbuilder
 
 import "fmt"
 
+type RowLevelLockMode int
+
+const (
+	LockModeUpdate RowLevelLockMode = iota
+	LockModeUpdateNowait
+	LockModeShare
+	LockModeShareNowait
+	LockModeNoKeyUpdate
+	LockModeKeyShare
+)
+
+func (m RowLevelLockMode) String() string {
+	return [...]string{"UPDATE", "UPDATE NOWAIT", "SHARE", "SHARE NOWAIT", "NO KEY UPDATE", "KEY SHARE"}[m]
+}
+
 type Conditions map[string]interface{}
 
 type SortDirection int
