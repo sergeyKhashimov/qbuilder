@@ -2,20 +2,20 @@ package qbuilder
 
 import (
 	"fmt"
-	parts2 "github.com/slmder/qbuilder/parts"
+	"github.com/slmder/qbuilder/parts"
 	"strings"
 )
 
 type InsertBuilder struct {
 	builder
-	insert    parts2.Insert
-	columns   parts2.Columns
-	values    parts2.Values
-	returning parts2.Returning
+	insert    parts.Insert
+	columns   parts.Columns
+	values    parts.Values
+	returning parts.Returning
 }
 
 func (i *InsertBuilder) Insert(into string) *InsertBuilder {
-	i.insert = parts2.Insert{Relation: into}
+	i.insert = parts.Insert{Relation: into}
 	return i
 }
 
@@ -41,10 +41,8 @@ func (i *InsertBuilder) Columns(alias ...string) *InsertBuilder {
 	return i
 }
 
-func (i *InsertBuilder) Returning(alias ...string) *InsertBuilder {
-	for _, a := range alias {
-		i.returning.Add(a)
-	}
+func (i *InsertBuilder) Returning(expr string) *InsertBuilder {
+	i.returning.Expr(expr)
 	return i
 }
 

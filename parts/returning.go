@@ -2,36 +2,24 @@ package parts
 
 import (
 	"fmt"
-	expression2 "github.com/slmder/qbuilder/parts/expression"
-	"strings"
+	"github.com/slmder/qbuilder/parts/expression"
 )
 
 type Returning struct {
-	aliases []expression2.RawColumnAlias
+	expr expression.RawExpression
 }
 
 func (r *Returning) String() string {
-	if len(r.aliases) > 0 {
-		return fmt.Sprintf("RETURNING %s", joinReturningAliases(r.aliases))
+	if r.expr.Expression != "" {
+		return fmt.Sprintf("RETURNING %s", r.expr)
 	}
 	return ""
 }
 
-func (r *Returning) Add(alias string) {
-	expr := strings.Split(alias, ",")
-	for _, e := range expr {
-		r.aliases = append(r.aliases, expression2.RawColumnAlias{Alias: strings.Trim(e, " ")})
-	}
+func (r *Returning) Expr(expr string) {
+	r.expr.Expression = expr
 }
 
 func (r *Returning) Reset() {
-	r.aliases = []expression2.RawColumnAlias{}
-}
-
-func joinReturningAliases(aliases []expression2.RawColumnAlias) string {
-	var res []string
-	for _, alias := range aliases {
-		res = append(res, alias.String())
-	}
-	return strings.Join(res, ", ")
+	r.expr.Expression = ""
 }
