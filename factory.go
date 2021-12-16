@@ -12,6 +12,10 @@ func SubSelect(sel string) *SelectBuilder {
 	return builder.SubSelect(sel)
 }
 
+func SelectE(obj interface{}, alias ...string) *SelectBuilder {
+	return Select(FieldList(obj, alias...))
+}
+
 func Insert(into string) *InsertBuilder {
 	builder := InsertBuilder{}
 	builder.parameters = NewParameterBag()
