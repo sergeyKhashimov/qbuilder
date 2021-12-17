@@ -51,7 +51,7 @@ func StrToDirection(str string) (SortDirection, error) {
 func FieldList(obj interface{}, formatter func(string) string) []string {
 	objType := reflect.TypeOf(obj)
 	switch objType.Kind() {
-	case reflect.Ptr:
+	case reflect.Ptr, reflect.Slice:
 		val := objType.Elem()
 		if val.Kind() != reflect.Struct {
 			argErr := fmt.Errorf("source must be a struct or struct pointer %s given", val.Kind().String())
