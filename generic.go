@@ -48,7 +48,7 @@ func StrToDirection(str string) (SortDirection, error) {
 	return SortDirectionDESC, fmt.Errorf("invalid direction %s", str)
 }
 
-func FieldList(obj interface{}, alias ...string) string {
+func FieldList(obj interface{}, formatter func(string) string) []string {
 	objType := reflect.TypeOf(obj)
 	switch objType.Kind() {
 	case reflect.Ptr:
@@ -64,23 +64,33 @@ func FieldList(obj interface{}, alias ...string) string {
 		panic(argErr)
 	}
 	names := make([]string, 0)
-	TaggedNames(objType, &names, alias...)
+	TaggedNames(objType, &names, formatter)
+	return names
+}
+
+func SelectList(obj interface{}, alias ...string) string {
+	names := FieldList(obj, func(raw string) string {
+		if len(alias) > 0 && alias[0] != "" {
+			return fmt.Sprintf("%s.%s", alias[0], raw)
+		}
+		return raw
+	})
 	return strings.Join(names, ", ")
 }
 
-func TaggedNames(t reflect.Type, names *[]string, alias ...string) {
+func TaggedNames(t reflect.Type, names *[]string, formatter func(string) string) {
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
-		if db, ok := field.Tag.Lookup("db"); ok {
-			if db != "" {
-				name := db
-				if len(alias) > 0 && alias[0] != "" {
-					name = fmt.Sprintf("%s.%s", alias[0], db)
+		if tag, ok := field.Tag.Lookup("db"); ok {
+			if tag != "" {
+				name := tag
+				if formatter != nil {
+					name = formatter(name)
 				}
 				*names = append(*names, name)
 			}
 		} else if field.Type.Kind() == reflect.Struct {
-			TaggedNames(field.Type, names, alias...)
+			TaggedNames(field.Type, names, formatter)
 		}
 	}
 }

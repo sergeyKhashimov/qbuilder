@@ -13,7 +13,7 @@ func SubSelect(sel string) *SelectBuilder {
 }
 
 func SelectE(obj interface{}, alias ...string) *SelectBuilder {
-	return Select(FieldList(obj, alias...))
+	return Select(SelectList(obj, alias...))
 }
 
 func Insert(into string) *InsertBuilder {
