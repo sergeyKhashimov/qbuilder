@@ -36,6 +36,10 @@ func (u *UpdateBuilder) SetMap(values map[string]string) *UpdateBuilder {
 	return u
 }
 
+func (u *UpdateBuilder) SetMapE(obj interface{}, exclude ...string) *UpdateBuilder {
+	return u.SetMap(StringMap(obj, exclude...))
+}
+
 func (u *UpdateBuilder) Where(expr ...string) *UpdateBuilder {
 	u.where.Reset()
 	for _, e := range expr {

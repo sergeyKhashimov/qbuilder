@@ -29,6 +29,10 @@ func (i *InsertBuilder) Row(set map[string]string) *InsertBuilder {
 	return i
 }
 
+func (i *InsertBuilder) RowE(obj interface{}, exclude ...string) *InsertBuilder {
+	return i.Row(StringMap(obj, exclude...))
+}
+
 func (i *InsertBuilder) Value(val string) *InsertBuilder {
 	i.values.Add(val)
 	return i

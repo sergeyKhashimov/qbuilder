@@ -36,6 +36,8 @@ func (d SortDirection) String() string {
 
 type Sort map[string]SortDirection
 
+type ColumnMap map[string]string
+
 func StrToDirection(str string) (SortDirection, error) {
 	m := map[string]SortDirection{
 		"ASC":  SortDirectionASC,
@@ -76,6 +78,21 @@ func SelectList(obj interface{}, alias ...string) string {
 		return raw
 	})
 	return strings.Join(names, ", ")
+}
+
+func StringMap(obj interface{}, exclude ...string) ColumnMap {
+	sm := ColumnMap{}
+	names := FieldList(obj, nil)
+	for _, n := range names {
+		for _, e := range exclude {
+			if e == n {
+				goto nextName
+			}
+		}
+		sm[n] = fmt.Sprintf(":%s", n)
+	nextName:
+	}
+	return sm
 }
 
 func TaggedNames(t reflect.Type, names *[]string, formatter func(string) string) {
