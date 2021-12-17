@@ -64,17 +64,23 @@ func FieldList(obj interface{}, alias ...string) string {
 		panic(argErr)
 	}
 	names := make([]string, 0)
-	for i := 0; i < objType.NumField(); i++ {
-		field := objType.Field(i)
+	TaggedNames(objType, &names, alias...)
+	return strings.Join(names, ", ")
+}
+
+func TaggedNames(t reflect.Type, names *[]string, alias ...string) {
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
 		if db, ok := field.Tag.Lookup("db"); ok {
 			if db != "" {
 				name := db
 				if len(alias) > 0 && alias[0] != "" {
 					name = fmt.Sprintf("%s.%s", alias[0], db)
 				}
-				names = append(names, name)
+				*names = append(*names, name)
 			}
+		} else if field.Type.Kind() == reflect.Struct {
+			TaggedNames(field.Type, names, alias...)
 		}
 	}
-	return strings.Join(names, ", ")
 }
