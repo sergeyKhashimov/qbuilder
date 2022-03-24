@@ -2,8 +2,9 @@ package parts
 
 import (
 	"fmt"
-	"github.com/slmder/qbuilder/parts/expression"
 	"strings"
+
+	"github.com/slmder/qbuilder/parts/expression"
 )
 
 type GroupBy struct {
@@ -19,6 +20,10 @@ func (p GroupBy) String() string {
 
 func (p *GroupBy) Set(expr string) {
 	p.GroupBy = []expression.RawExpression{{Expression: expr}}
+}
+
+func (p *GroupBy) Reset() {
+	p.GroupBy = []expression.RawExpression{}
 }
 
 func (p *GroupBy) Add(expr string) {

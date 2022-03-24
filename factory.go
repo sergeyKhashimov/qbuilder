@@ -1,6 +1,6 @@
 package qbuilder
 
-func Select(sel... string) *SelectBuilder {
+func Select(sel ...string) *SelectBuilder {
 	builder := SelectBuilder{}
 	builder.parameters = NewParameterBag()
 	return builder.Select(sel...)
@@ -32,4 +32,16 @@ func Delete(rel string) *DeleteBuilder {
 	builder := DeleteBuilder{}
 	builder.parameters = NewParameterBag()
 	return builder.Delete(rel)
+}
+
+func Call(proc string) *CallBuilder {
+	builder := CallBuilder{}
+	builder.parameters = NewParameterBag()
+	return builder.Call(proc)
+}
+
+func Callf(proc string, a ...interface{}) *CallBuilder {
+	builder := CallBuilder{}
+	builder.parameters = NewParameterBag()
+	return builder.Callf(proc, a...)
 }

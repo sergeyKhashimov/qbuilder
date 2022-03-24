@@ -2,9 +2,10 @@ package qbuilder
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/slmder/qbuilder/parts"
 	"github.com/slmder/qbuilder/parts/expression"
-	"strings"
 )
 
 type SelectBuilder struct {
@@ -140,6 +141,7 @@ func (s *SelectBuilder) Having(expr string) *SelectBuilder {
 }
 
 func (s *SelectBuilder) GroupBy(expr string) *SelectBuilder {
+	s.ResetGroupBy()
 	s.groupBy.Set(expr)
 	return s
 }
@@ -149,7 +151,13 @@ func (s *SelectBuilder) AddGroupBy(expr string) *SelectBuilder {
 	return s
 }
 
+func (s *SelectBuilder) ResetGroupBy() *SelectBuilder {
+	s.groupBy.Reset()
+	return s
+}
+
 func (s *SelectBuilder) OrderBy(sort Sort) *SelectBuilder {
+	s.orderBy.Reset()
 	if sort != nil {
 		for expr, direction := range sort {
 			s.orderBy.Add(expr, direction.String())

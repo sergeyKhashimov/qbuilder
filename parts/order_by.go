@@ -2,8 +2,9 @@ package parts
 
 import (
 	"fmt"
-	expression2 "github.com/slmder/qbuilder/parts/expression"
 	"strings"
+
+	expression2 "github.com/slmder/qbuilder/parts/expression"
 )
 
 type OrderBy struct {
@@ -19,6 +20,10 @@ func (p OrderBy) String() string {
 
 func (p *OrderBy) Set(expr string, direction string) {
 	p.OrderBy = []expression2.SortExpression{{Expression: expr, Direction: direction}}
+}
+
+func (p *OrderBy) Reset() {
+	p.OrderBy = []expression2.SortExpression{}
 }
 
 func (p *OrderBy) Add(expr string, direction string) {
