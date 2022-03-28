@@ -106,7 +106,7 @@ func TaggedNames(t reflect.Type, names *[]string, formatter func(string) string)
 				}
 				*names = append(*names, name)
 			}
-		} else if field.Type.Kind() == reflect.Struct {
+		} else if field.Type.Kind() == reflect.Struct && field.Anonymous {
 			TaggedNames(field.Type, names, formatter)
 		}
 	}
