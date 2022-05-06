@@ -21,6 +21,7 @@ type SelectBuilder struct {
 	having    parts.Having
 	groupBy   parts.GroupBy
 	orderBy   parts.OrderBy
+	union     parts.Union
 	forClause string
 	lWrap     string
 	rWrap     string
@@ -55,8 +56,11 @@ func (s *SelectBuilder) SubSelect(sel string) *SelectBuilder {
 	return s
 }
 
-func (s *SelectBuilder) From(rel string) *SelectBuilder {
+func (s *SelectBuilder) From(rel string, alias ...string) *SelectBuilder {
 	s.from = parts.From{Relation: rel}
+	if len(alias) > 0 {
+		s.Alias(alias[0])
+	}
 	return s
 }
 
@@ -158,10 +162,8 @@ func (s *SelectBuilder) ResetGroupBy() *SelectBuilder {
 
 func (s *SelectBuilder) OrderBy(sort Sort) *SelectBuilder {
 	s.orderBy.Reset()
-	if sort != nil {
-		for expr, direction := range sort {
-			s.orderBy.Add(expr, direction.String())
-		}
+	for expr, direction := range sort {
+		s.orderBy.Add(expr, direction.String())
 	}
 	return s
 }
@@ -188,8 +190,24 @@ func (s *SelectBuilder) RemoveParameter(name string) *SelectBuilder {
 	return s
 }
 
+func (s *SelectBuilder) Union(expr string) *SelectBuilder {
+	s.union.Set(expr)
+	return s
+}
+
+func (s *SelectBuilder) With(name string, sql string, cols ...string) *SelectBuilder {
+	s.with.AddDefinition(name, sql, cols...)
+	return s
+}
+
+func (s *SelectBuilder) WithRecursive(name string, sql string, cols ...string) *SelectBuilder {
+	s.with.Recursive = true
+	return s.With(name, sql, cols...)
+}
+
 func (s *SelectBuilder) ToSQL() string {
 	expr := []string{
+		s.with.String(),
 		s.sel.String(),
 		s.from.String(),
 		s.alias.String(),
@@ -202,6 +220,7 @@ func (s *SelectBuilder) ToSQL() string {
 		s.limit.String(),
 		s.offset.String(),
 		s.forClause,
+		s.union.String(),
 	}
 	return fmt.Sprintf("%s%s%s", s.lWrap, strings.Trim(strings.Join(expr, " "), " "), s.rWrap)
 }

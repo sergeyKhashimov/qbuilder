@@ -5,5 +5,5 @@ type RawColumnAlias struct {
 }
 
 func (p RawColumnAlias) String() string {
-	return  p.Alias
+	return p.Alias
 }

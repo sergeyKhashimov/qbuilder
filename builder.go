@@ -2,6 +2,8 @@ package qbuilder
 
 import (
 	"fmt"
+
+	"github.com/slmder/qbuilder/parts"
 )
 
 type BuilderInterface interface {
@@ -10,9 +12,10 @@ type BuilderInterface interface {
 
 type builder struct {
 	parameters ParameterBag
+	with       parts.With
 }
 
-func (b builder) Parameters() ParameterBag {
+func (b *builder) Parameters() ParameterBag {
 	return b.parameters
 }
 
@@ -30,4 +33,3 @@ func ToArgsAndExpressions(conditions map[string]interface{}) ([]interface{}, []s
 	}
 	return args, expressions
 }
-

@@ -9,5 +9,5 @@ type Delete struct {
 }
 
 func (d *Delete) String() string {
-	return  fmt.Sprintf("DELETE FROM %s", d.Relation)
+	return fmt.Sprintf("DELETE FROM %s", d.Relation)
 }

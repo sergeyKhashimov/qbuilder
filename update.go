@@ -2,8 +2,9 @@ package qbuilder
 
 import (
 	"fmt"
-	parts2 "github.com/slmder/qbuilder/parts"
 	"strings"
+
+	parts2 "github.com/slmder/qbuilder/parts"
 )
 
 type UpdateBuilder struct {
@@ -79,8 +80,19 @@ func (u *UpdateBuilder) RemoveParameter(name string) *UpdateBuilder {
 	return u
 }
 
+func (u *UpdateBuilder) With(name string, sql string, cols ...string) *UpdateBuilder {
+	u.with.AddDefinition(name, sql, cols...)
+	return u
+}
+
+func (u *UpdateBuilder) WithRecursive(name string, sql string, cols ...string) *UpdateBuilder {
+	u.with.Recursive = true
+	return u.With(name, sql, cols...)
+}
+
 func (u *UpdateBuilder) ToSQL() string {
 	expressions := []string{
+		u.with.String(),
 		u.update.String(),
 		u.set.String(),
 		u.from.String(),

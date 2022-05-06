@@ -2,8 +2,9 @@ package qbuilder
 
 import (
 	"fmt"
-	"github.com/slmder/qbuilder/parts"
 	"strings"
+
+	"github.com/slmder/qbuilder/parts"
 )
 
 type DeleteBuilder struct {
@@ -68,8 +69,19 @@ func (d *DeleteBuilder) Returning(expr string) *DeleteBuilder {
 	return d
 }
 
+func (d *DeleteBuilder) With(name string, sql string, cols ...string) *DeleteBuilder {
+	d.with.AddDefinition(name, sql, cols...)
+	return d
+}
+
+func (d *DeleteBuilder) WithRecursive(name string, sql string, cols ...string) *DeleteBuilder {
+	d.with.Recursive = true
+	return d.With(name, sql, cols...)
+}
+
 func (d *DeleteBuilder) ToSQL() string {
 	expressions := []string{
+		d.with.String(),
 		d.delete.String(),
 		d.using.String(),
 		d.where.String(),

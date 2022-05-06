@@ -52,7 +52,7 @@ func StrToDirection(str string) (SortDirection, error) {
 
 func FieldList(obj interface{}, formatter func(string) string) []string {
 	objType := reflect.TypeOf(obj)
-	switch objType.Kind() {
+	switch objType.Kind() { //nolint:exhaustive
 	case reflect.Ptr, reflect.Slice:
 		val := objType.Elem()
 		if val.Kind() != reflect.Struct {

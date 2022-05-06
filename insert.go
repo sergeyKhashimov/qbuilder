@@ -2,8 +2,9 @@ package qbuilder
 
 import (
 	"fmt"
-	"github.com/slmder/qbuilder/parts"
 	"strings"
+
+	"github.com/slmder/qbuilder/parts"
 )
 
 type InsertBuilder struct {
@@ -67,8 +68,19 @@ func (i *InsertBuilder) RemoveParameter(name string) *InsertBuilder {
 	return i
 }
 
+func (i *InsertBuilder) With(name string, sql string, cols ...string) *InsertBuilder {
+	i.with.AddDefinition(name, sql, cols...)
+	return i
+}
+
+func (i *InsertBuilder) WithRecursive(name string, sql string, cols ...string) *InsertBuilder {
+	i.with.Recursive = true
+	return i.With(name, sql, cols...)
+}
+
 func (i *InsertBuilder) ToSQL() string {
 	expressions := []string{
+		i.with.String(),
 		i.insert.String(),
 		i.columns.String(),
 		i.values.String(),
