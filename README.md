@@ -7,7 +7,9 @@ Feel free to make a PR
 
 Simple SELECT example
 
-```
+```golang
+import "github.com/slmder/qbuilder"
+
 sql := qbuilder.Select("*").
         From("users").
         Where("age > $1").
@@ -18,7 +20,9 @@ Output: SELECT * FROM "users" WHERE age > $1;
 
 Example SELECT column list
 
-```
+```golang
+import "github.com/slmder/qbuilder"
+
 sql := qbuilder.Select("id, age, email, first_name").
         From("users").
         Where("age > $1").
@@ -29,7 +33,9 @@ Output: SELECT id, age, email, first_name FROM "users" WHERE age > $1;
 
 Example with postgres native function, pagination and sorting
 
-```
+```golang
+import "github.com/slmder/qbuilder"
+
 sql := qbuilder.Select().   // Empty list interpreted as *
         From("users").
         Where("LOWER(first_name) ~ $1").
@@ -46,7 +52,9 @@ Output: SELECT * FROM "users" WHERE LOWER(first_name) ~ $1 ORDER BY created_at D
 
 Example INSERT
 
-```
+```golang
+import "github.com/slmder/qbuilder"
+
 sql := qbuilder.Insert("users").
 		Columns("email, first_name, last_name, created_at").
 		Value("$1, $2, $3, NOW()").
@@ -59,7 +67,9 @@ Output: INSERT INTO "users" (email, first_name, last_name, created_at) VALUES ($
 
 Example INSERT by 'db' tags, including anonymous embed structs fields 
 
-```
+```golang
+import "github.com/slmder/qbuilder"
+
 type User struct {
 	Email           string     `db:"email"`
 	FirstName       string     `db:"first_name"`
@@ -74,7 +84,9 @@ Output: INSERT INTO "users" (email, first_name, last_name, created_at) VALUES (:
 
 Example UPDATE 
 
-```
+```golang
+import "github.com/slmder/qbuilder"
+
 sql := qbuilder.Update("users").
         SetMap(map[string]string{
             "first_name": "$1",
@@ -85,10 +97,31 @@ sql := qbuilder.Update("users").
 
 Output: UPDATE "users" SET first_name = $1, last_name = $2 WHERE id = $1;
 ```
+Example UPDATE by 'db' tags
+
+```golang
+import "github.com/slmder/qbuilder"
+
+type User struct {
+	Email           string     `db:"email"`
+	FirstName       string     `db:"first_name"`
+	LastName        string     `db:"last_name"`
+	CreatedAt       time.Time  `db:"created_at"`
+}
+user := User{}
+sql := qbuilder.Update("users").
+        SetMapE(user).
+        Where("id = $1").
+        ToSQL()
+
+Output: UPDATE "users" SET email = :email, first_name = :first_name, last_name = :last_name, created_at = :created_at WHERE id = $1;
+```
 
 Example DELETE 
 
-```
+```golang
+import "github.com/slmder/qbuilder"
+
 sql := qbuilder.Delete("users").Where("id = :id").ToSQL()
 
 Output: DELETE FROM "users" WHERE id = $1;
@@ -97,7 +130,9 @@ Output: DELETE FROM "users" WHERE id = $1;
 Complex sql with sub selects, union and CTE.
 All builder have ability to use CTE.
 
-```
+```golang
+import "github.com/slmder/qbuilder"
+
 sql := qbuilder.
     Select("up.*").
     From("user_permissions", "up").
