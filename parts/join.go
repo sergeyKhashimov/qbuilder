@@ -1,8 +1,9 @@
 package parts
 
 import (
-	expression2 "github.com/slmder/qbuilder/parts/expression"
 	"strings"
+
+	expression2 "github.com/slmder/qbuilder/parts/expression"
 )
 
 type Join struct {
@@ -21,9 +22,9 @@ func (j *Join) Add(rel string, alias Alias, cond string, direct expression2.Dire
 }
 
 func joinJoinExpressions(expressions []expression2.JoinExpression) string {
-	var res []string
+	var res = make([]string, len(expressions))
 	for _, expr := range expressions {
 		res = append(res, strings.Trim(expr.String(), " "))
 	}
-	return strings.Join(res, "\n")
+	return strings.Join(res, " ")
 }

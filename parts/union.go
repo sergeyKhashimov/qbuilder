@@ -7,18 +7,30 @@ import (
 )
 
 type Union struct {
-	Expression expression.RawExpression
+	Blocks []expression.RawExpression
 }
 
-func (u *Union) Set(expr string) {
-	u.Expression = expression.RawExpression{
-		Expression: expr,
+func (u *Union) Add(expr string, all bool) {
+	cmd := "UNION"
+	if all {
+		cmd = fmt.Sprintf("%s ALL", cmd)
 	}
+	u.Blocks = append(u.Blocks, expression.RawExpression{
+		Expression: fmt.Sprintf("%s (%s)", cmd, expr),
+	})
 }
 
 func (u Union) String() string {
-	if u.Expression.String() == "" {
+	if len(u.Blocks) == 0 {
 		return ""
 	}
-	return fmt.Sprintf("UNION (%s)", u.Expression.String())
+	return joinUnionExpressions(u.Blocks)
+}
+
+func joinUnionExpressions(blocks []expression.RawExpression) string {
+	var res string
+	for _, block := range blocks {
+		res = fmt.Sprintf("%s %s", res, block.Expression)
+	}
+	return res
 }

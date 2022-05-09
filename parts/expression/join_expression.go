@@ -12,7 +12,11 @@ type JoinExpression struct {
 }
 
 func (j JoinExpression) String() string {
-	return fmt.Sprintf("%s JOIN %s %s ON %s", j.Direction, j.Relation, j.Alias, j.Condition)
+	join := fmt.Sprintf("%s JOIN %s %s", j.Direction, j.Relation, j.Alias)
+	if j.Condition != "" {
+		join = fmt.Sprintf("%s ON %s", join, j.Condition)
+	}
+	return join
 }
 
 type Direction int
@@ -21,8 +25,9 @@ const (
 	DirectionLeft Direction = iota
 	DirectionRight
 	DirectionInner
+	DirectionCross
 )
 
 func (d Direction) String() string {
-	return [...]string{"LEFT", "RIGHT", "INNER"}[d]
+	return [...]string{"LEFT", "RIGHT", "INNER", "CROSS"}[d]
 }

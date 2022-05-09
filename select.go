@@ -69,23 +69,28 @@ func (s *SelectBuilder) Alias(alias string) *SelectBuilder {
 	return s
 }
 
-func (s *SelectBuilder) InnerJoin(rel string, alias string, cond string) *SelectBuilder {
-	s.join.Add(rel, parts.Alias{Alias: alias}, cond, expression.DirectionInner)
+func (s *SelectBuilder) InnerJoin(rel string, alias string, on string) *SelectBuilder {
+	s.join.Add(rel, parts.Alias{Alias: alias}, on, expression.DirectionInner)
 	return s
 }
 
-func (s *SelectBuilder) LeftJoin(rel string, alias string, cond string) *SelectBuilder {
-	s.join.Add(rel, parts.Alias{Alias: alias}, cond, expression.DirectionLeft)
+func (s *SelectBuilder) LeftJoin(rel string, alias string, on string) *SelectBuilder {
+	s.join.Add(rel, parts.Alias{Alias: alias}, on, expression.DirectionLeft)
 	return s
 }
 
-func (s *SelectBuilder) RightJoin(rel string, alias string, cond string) *SelectBuilder {
-	s.join.Add(rel, parts.Alias{Alias: alias}, cond, expression.DirectionRight)
+func (s *SelectBuilder) RightJoin(rel string, alias string, on string) *SelectBuilder {
+	s.join.Add(rel, parts.Alias{Alias: alias}, on, expression.DirectionRight)
 	return s
 }
 
-func (s *SelectBuilder) Join(rel string, alias string, cond string) *SelectBuilder {
-	return s.InnerJoin(rel, alias, cond)
+func (s *SelectBuilder) CrossJoin(rel string, alias string) *SelectBuilder {
+	s.join.Add(rel, parts.Alias{Alias: alias}, "", expression.DirectionCross)
+	return s
+}
+
+func (s *SelectBuilder) Join(rel string, alias string, on string) *SelectBuilder {
+	return s.InnerJoin(rel, alias, on)
 }
 
 func (s *SelectBuilder) Where(expr ...string) *SelectBuilder {
@@ -191,7 +196,12 @@ func (s *SelectBuilder) RemoveParameter(name string) *SelectBuilder {
 }
 
 func (s *SelectBuilder) Union(expr string) *SelectBuilder {
-	s.union.Set(expr)
+	s.union.Add(expr, false)
+	return s
+}
+
+func (s *SelectBuilder) UnionAll(expr string) *SelectBuilder {
+	s.union.Add(expr, true)
 	return s
 }
 
