@@ -10,12 +10,15 @@ Simple SELECT example
 ```golang
 import "github.com/slmder/qbuilder"
 
+coins:= []int{1,2,3}
 sql := qbuilder.Select("*").
         From("users").
         Where("age > $1").
+        AndWheref("coins >= %d", len(coins)). // Can use formatting
         ToSQL()
-        
-Output: SELECT * FROM "users" WHERE age > $1;
+```
+```postgresql
+Output: SELECT * FROM "users" WHERE (age > $1) AND (coins >= 3);
 ```
 
 Example SELECT column list
@@ -27,7 +30,8 @@ sql := qbuilder.Select("id, age, email, first_name").
         From("users").
         Where("age > $1").
         ToSQL()
-
+```
+```postgresql
 Output: SELECT id, age, email, first_name FROM "users" WHERE age > $1;
 ```
 
@@ -39,6 +43,7 @@ import "github.com/slmder/qbuilder"
 sql := qbuilder.Select().   // Empty list interpreted as *
         From("users").
         Where("LOWER(first_name) ~ $1").
+        AndWhere("LOWER(last_name) ~ $1").
         OrderBy(qbuilder.Sort{
             "created_at": qbuilder.SortDirectionDESC,
             "first_name": qbuilder.SortDirectionASC,
@@ -46,7 +51,8 @@ sql := qbuilder.Select().   // Empty list interpreted as *
         Limit(1).
         Offset(1).
         ToSQL()
-
+```
+```postgresql
 Output: SELECT * FROM "users" WHERE LOWER(first_name) ~ $1 ORDER BY created_at DESC, first_name ASC;
 ```
 
@@ -61,7 +67,8 @@ sql := qbuilder.Insert("users").
 		Returning("id").
 		ToSQL()
 
-
+```
+```postgresql
 Output: INSERT INTO "users" (email, first_name, last_name, created_at) VALUES ($1, $2, $3, NOW());
 ```
 
@@ -78,7 +85,8 @@ type User struct {
 }
 user := User{}
 sql := qbuilder.Insert("users").RowE(user).ToSQL()
-
+```
+```postgresql
 Output: INSERT INTO "users" (email, first_name, last_name, created_at) VALUES (:email, :first_name, :last_name, :created_at);
 ```
 
@@ -94,7 +102,8 @@ sql := qbuilder.Update("users").
         }).
         Where("id = $1").
         ToSQL()
-
+```
+```postgresql
 Output: UPDATE "users" SET first_name = $1, last_name = $2 WHERE id = $1;
 ```
 Example UPDATE by 'db' tags
@@ -113,7 +122,8 @@ sql := qbuilder.Update("users").
         SetMapE(user).
         Where("id = $1").
         ToSQL()
-
+```
+```postgresql
 Output: UPDATE "users" SET email = :email, first_name = :first_name, last_name = :last_name, created_at = :created_at WHERE id = $1;
 ```
 
@@ -123,7 +133,8 @@ Example DELETE
 import "github.com/slmder/qbuilder"
 
 sql := qbuilder.Delete("users").Where("id = :id").ToSQL()
-
+```
+```postgresql
 Output: DELETE FROM "users" WHERE id = $1;
 ```
 
@@ -152,7 +163,8 @@ sql := qbuilder.
                 ToSQL()).
             ToSQL()).
     ToSQL()
-
+```
+```postgresql
 Output: WITH RECURSIVE user_groups AS (
             SELECT group_id 
                 FROM user_group 
