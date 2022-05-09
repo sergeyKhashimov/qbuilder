@@ -17,7 +17,7 @@ sql := qbuilder.Select("*").
         AndWheref("coins >= %d", len(coins)). // Can use formatting
         ToSQL()
 ```
-```postgresql
+```sql
 Output: SELECT * FROM "users" WHERE (age > $1) AND (coins >= 3);
 ```
 
@@ -31,7 +31,7 @@ sql := qbuilder.Select("id, age, email, first_name").
         Where("age > $1").
         ToSQL()
 ```
-```postgresql
+```sql
 Output: SELECT id, age, email, first_name FROM "users" WHERE age > $1;
 ```
 
@@ -52,7 +52,7 @@ sql := qbuilder.Select().   // Empty list interpreted as *
         Offset(1).
         ToSQL()
 ```
-```postgresql
+```sql
 Output: SELECT * FROM "users" WHERE LOWER(first_name) ~ $1 ORDER BY created_at DESC, first_name ASC;
 ```
 
@@ -68,7 +68,7 @@ sql := qbuilder.Insert("users").
 		ToSQL()
 
 ```
-```postgresql
+```sql
 Output: INSERT INTO "users" (email, first_name, last_name, created_at) VALUES ($1, $2, $3, NOW());
 ```
 
@@ -86,7 +86,7 @@ type User struct {
 user := User{}
 sql := qbuilder.Insert("users").RowE(user).ToSQL()
 ```
-```postgresql
+```sql
 Output: INSERT INTO "users" (email, first_name, last_name, created_at) VALUES (:email, :first_name, :last_name, :created_at);
 ```
 
@@ -103,7 +103,7 @@ sql := qbuilder.Update("users").
         Where("id = $1").
         ToSQL()
 ```
-```postgresql
+```sql
 Output: UPDATE "users" SET first_name = $1, last_name = $2 WHERE id = $1;
 ```
 Example UPDATE by 'db' tags
@@ -123,7 +123,7 @@ sql := qbuilder.Update("users").
         Where("id = $1").
         ToSQL()
 ```
-```postgresql
+```sql
 Output: UPDATE "users" SET email = :email, first_name = :first_name, last_name = :last_name, created_at = :created_at WHERE id = $1;
 ```
 
@@ -134,7 +134,7 @@ import "github.com/slmder/qbuilder"
 
 sql := qbuilder.Delete("users").Where("id = :id").ToSQL()
 ```
-```postgresql
+```sql
 Output: DELETE FROM "users" WHERE id = $1;
 ```
 
@@ -164,7 +164,7 @@ sql := qbuilder.
             ToSQL()).
     ToSQL()
 ```
-```postgresql
+```sql
 Output: WITH RECURSIVE user_groups AS (
             SELECT group_id 
                 FROM user_group 
