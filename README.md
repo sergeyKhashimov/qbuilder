@@ -35,7 +35,7 @@ sql := qbuilder.Select("id, age, email, first_name").
 Output: SELECT id, age, email, first_name FROM "users" WHERE age > $1;
 ```
 
-Example SELECT WHERE builder
+Example SELECT with conjunction builder
 
 ```golang
 import "github.com/slmder/qbuilder"
@@ -49,6 +49,22 @@ sql := qbuilder.Select("id, age, email, first_name").
 ```
 ```sql
 Output: SELECT id, age, email, first_name FROM "users" WHERE ((role = 'Admin') AND (age > $1) AND (created_at >= $2));
+```
+
+Example SELECT with disjunction builder
+
+```golang
+import "github.com/slmder/qbuilder"
+
+orx := qbuilder.OrX("role = 'Admin'").Add("age > $1").Add("created_at >= $2").ToSQL()
+
+sql := qbuilder.Select("id, age, email, first_name").
+        From("users").
+        Where(andx).
+        ToSQL()
+```
+```sql
+Output: SELECT id, age, email, first_name FROM "users" WHERE ((role = 'Admin') OR (age > $1) OR (created_at >= $2));
 ```
 
 Example with postgres native function, pagination and sorting
