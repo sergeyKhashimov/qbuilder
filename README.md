@@ -1,6 +1,5 @@
-![golang](https://www.vectorlogo.zone/logos/golang/golang-ar21.svg)
 ### Golang sql query builder for postgres
-
+<img src="https://github.com/slmder/qbuilder/blob/master/sql.svg" width="50"> <img src="https://github.com/slmder/qbuilder/blob/master/go-lang.svg" width="50">
 qbuilder - is a simple (errorless, with zero dependencies) sql string builder implementation.
 All string arguments are included in the final result unchanged as is.
 
