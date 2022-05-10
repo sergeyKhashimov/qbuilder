@@ -5,7 +5,7 @@ All string arguments are included in the final result unchanged as is.
 
 Feel free to make a PR
 
-Simple SELECT example
+#### Simple SELECT example
 
 ```golang
 import "github.com/slmder/qbuilder"
@@ -21,7 +21,7 @@ sql := qbuilder.Select("*").
 Output: SELECT * FROM "users" WHERE (age > $1) AND (coins >= 3);
 ```
 
-Example SELECT column list
+#### Example SELECT column list
 
 ```golang
 import "github.com/slmder/qbuilder"
@@ -35,7 +35,7 @@ sql := qbuilder.Select("id, age, email, first_name").
 Output: SELECT id, age, email, first_name FROM "users" WHERE age > $1;
 ```
 
-Example SELECT with conjunction builder
+#### Example SELECT with conjunction builder
 
 ```golang
 import "github.com/slmder/qbuilder"
@@ -51,7 +51,7 @@ sql := qbuilder.Select("id, age, email, first_name").
 Output: SELECT id, age, email, first_name FROM "users" WHERE ((role = 'Admin') AND (age > $1) AND (created_at >= $2));
 ```
 
-Example SELECT with disjunction builder
+#### Example SELECT with disjunction builder
 
 ```golang
 import "github.com/slmder/qbuilder"
@@ -67,7 +67,7 @@ sql := qbuilder.Select("id, age, email, first_name").
 Output: SELECT id, age, email, first_name FROM "users" WHERE ((role = 'Admin') OR (age > $1) OR (created_at >= $2));
 ```
 
-Example with postgres native function, pagination and sorting
+#### Example with postgres native function, pagination and sorting
 
 ```golang
 import "github.com/slmder/qbuilder"
@@ -88,7 +88,38 @@ sql := qbuilder.Select().   // Empty list interpreted as *
 Output: SELECT * FROM "users" WHERE LOWER(first_name) ~ $1 ORDER BY created_at DESC, first_name ASC LIMIT 1 OFFSET 1;
 ```
 
-Example INSERT
+#### Example Row level lock
+
+```golang
+import "github.com/slmder/qbuilder"
+
+// Available lock modes
+
+// LockModeUpdate
+// LockModeUpdateNowait
+// LockModeShare
+// LockModeShareNowait
+// LockModeNoKeyUpdate
+// LockModeKeyShare
+
+sql := qbuilder.Select().
+        From("users").
+        Where("id = $1").
+        For(qbuilder.LockModeUpdate)
+        Limit(1).
+        ToSQL()
+// Alternative syntax
+sql := qbuilder.Select().
+        From("users").
+        Where("id = $1").
+        WithLock() // Is an alias for 'qbuilder.For(qbuilder.LockModeUpdate)'
+        ToSQL()
+```
+```sql
+Output: SELECT * FROM "users" WHERE id = $1 FOR UPDATE;
+```
+
+#### Example INSERT
 
 ```golang
 import "github.com/slmder/qbuilder"
@@ -104,7 +135,7 @@ sql := qbuilder.Insert("users").
 Output: INSERT INTO "users" (email, first_name, last_name, created_at) VALUES ($1, $2, $3, NOW());
 ```
 
-Example INSERT by 'db' tags, including anonymous embed structs fields 
+#### Example INSERT by 'db' tags, including anonymous embed structs fields 
 
 ```golang
 import "github.com/slmder/qbuilder"
@@ -122,7 +153,7 @@ sql := qbuilder.Insert("users").RowE(user).ToSQL()
 Output: INSERT INTO "users" (email, first_name, last_name, created_at) VALUES (:email, :first_name, :last_name, :created_at);
 ```
 
-Example UPDATE 
+#### Example UPDATE 
 
 ```golang
 import "github.com/slmder/qbuilder"
@@ -138,7 +169,7 @@ sql := qbuilder.Update("users").
 ```sql
 Output: UPDATE "users" SET first_name = $1, last_name = $2 WHERE id = $1;
 ```
-Example UPDATE by 'db' tags
+#### Example UPDATE by 'db' tags
 
 ```golang
 import "github.com/slmder/qbuilder"
@@ -159,7 +190,7 @@ sql := qbuilder.Update("users").
 Output: UPDATE "users" SET email = :email, first_name = :first_name, last_name = :last_name, created_at = :created_at WHERE id = $1;
 ```
 
-Example DELETE 
+#### Example DELETE 
 
 ```golang
 import "github.com/slmder/qbuilder"
@@ -170,8 +201,7 @@ sql := qbuilder.Delete("users").Where("id = :id").ToSQL()
 Output: DELETE FROM "users" WHERE id = $1;
 ```
 
-Complex sql with sub selects, union and CTE.
-All builder have ability to use CTE.
+#### Complex sql with sub selects, union and CTE. All builder have ability to use CTE.
 
 ```golang
 import "github.com/slmder/qbuilder"
@@ -215,7 +245,7 @@ Output: WITH RECURSIVE user_groups AS (
        SELECT up.* FROM user_permissions AS up;
 ```
 
-Call procedure.
+#### Call procedure.
 
 ```golang
 import "github.com/slmder/qbuilder"
