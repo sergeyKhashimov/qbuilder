@@ -35,6 +35,22 @@ sql := qbuilder.Select("id, age, email, first_name").
 Output: SELECT id, age, email, first_name FROM "users" WHERE age > $1;
 ```
 
+Example SELECT WHERE builder
+
+```golang
+import "github.com/slmder/qbuilder"
+
+andx := qbuilder.AndX("role = 'Admin'").Add("age > $1").Add("created_at >= $2").ToSQL()
+
+sql := qbuilder.Select("id, age, email, first_name").
+        From("users").
+        Where(andx).
+        ToSQL()
+```
+```sql
+Output: SELECT id, age, email, first_name FROM "users" WHERE ((role = 'Admin') AND (age > $1) AND (created_at >= $2));
+```
+
 Example with postgres native function, pagination and sorting
 
 ```golang
@@ -53,7 +69,7 @@ sql := qbuilder.Select().   // Empty list interpreted as *
         ToSQL()
 ```
 ```sql
-Output: SELECT * FROM "users" WHERE LOWER(first_name) ~ $1 ORDER BY created_at DESC, first_name ASC;
+Output: SELECT * FROM "users" WHERE LOWER(first_name) ~ $1 ORDER BY created_at DESC, first_name ASC LIMIT 1 OFFSET 1;
 ```
 
 Example INSERT
@@ -181,4 +197,15 @@ Output: WITH RECURSIVE user_groups AS (
                 (SELECT p.* FROM acl_permission AS p)
             )
        SELECT up.* FROM user_permissions AS up;
+```
+
+Call procedure.
+
+```golang
+import "github.com/slmder/qbuilder"
+
+sql := qbuilder.Call("procedure_name").Arg("$1").Arg("$2").ToSQL()
+```
+```sql
+Output: CALL procedure_name($1, $2);
 ```
