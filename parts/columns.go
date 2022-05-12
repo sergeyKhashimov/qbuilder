@@ -31,8 +31,8 @@ func (c *Columns) Reset() {
 
 func joinColumnAliases(aliases []expression.RawColumnAlias) string {
 	var res = make([]string, len(aliases))
-	for _, alias := range aliases {
-		res = append(res, alias.String())
+	for i, alias := range aliases {
+		res[i] = alias.String()
 	}
 	return strings.Join(res, ", ")
 }
