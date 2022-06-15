@@ -4,7 +4,7 @@
 qbuilder - is a simple (errorless, with zero dependencies) sql string builder implementation.
 All string arguments are included in the final result unchanged as is.
 
-Feel free to make a PR
+Feel free to make a PR.
 
 #### Simple SELECT example
 
