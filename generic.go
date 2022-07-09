@@ -15,10 +15,11 @@ const (
 	LockModeShareNowait
 	LockModeNoKeyUpdate
 	LockModeKeyShare
+	LockModeUpdateSkipLocked
 )
 
 func (m RowLevelLockMode) String() string {
-	return [...]string{"UPDATE", "UPDATE NOWAIT", "SHARE", "SHARE NOWAIT", "NO KEY UPDATE", "KEY SHARE"}[m]
+	return [...]string{"UPDATE", "UPDATE NOWAIT", "SHARE", "SHARE NOWAIT", "NO KEY UPDATE", "KEY SHARE", "SKIP LOCKED"}[m]
 }
 
 type Conditions map[string]interface{}
