@@ -19,7 +19,7 @@ const (
 )
 
 func (m RowLevelLockMode) String() string {
-	return [...]string{"UPDATE", "UPDATE NOWAIT", "SHARE", "SHARE NOWAIT", "NO KEY UPDATE", "KEY SHARE", "SKIP LOCKED"}[m]
+	return [...]string{"UPDATE", "UPDATE NOWAIT", "SHARE", "SHARE NOWAIT", "NO KEY UPDATE", "KEY SHARE", "UPDATE SKIP LOCKED"}[m]
 }
 
 type Conditions map[string]interface{}
