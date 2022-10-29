@@ -44,9 +44,9 @@ func (o *OnConflict) String() string {
 		return "ON CONFLICT DO NOTHING"
 	}
 	if len(o.doUpdate) > 0 && o.Target != "" {
-		var set string
+		var set = "SET "
 		for f, v := range o.doUpdate {
-			set += "SET \"" + f + "\" = " + v + ","
+			set += "\"" + f + "\" = " + v + ","
 		}
 		return "ON CONFLICT " + o.Target + " DO UPDATE " + strings.Trim(set, ",")
 	}
