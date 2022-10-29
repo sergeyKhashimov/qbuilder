@@ -9,10 +9,11 @@ import (
 
 type InsertBuilder struct {
 	builder
-	insert    parts.Insert
-	columns   parts.Columns
-	values    parts.Values
-	returning parts.Returning
+	insert     parts.Insert
+	columns    parts.Columns
+	values     parts.Values
+	onConflict *OnConflict
+	returning  parts.Returning
 }
 
 func (i *InsertBuilder) Insert(into string) *InsertBuilder {
@@ -44,6 +45,15 @@ func (i *InsertBuilder) Columns(alias ...string) *InsertBuilder {
 		i.columns.Add(a)
 	}
 	return i
+}
+
+func (i *InsertBuilder) OnConflict() *OnConflict {
+	if i.onConflict == nil {
+		i.onConflict = &OnConflict{
+			Insert: i,
+		}
+	}
+	return i.onConflict
 }
 
 func (i *InsertBuilder) Returning(expr string) *InsertBuilder {
@@ -84,6 +94,7 @@ func (i *InsertBuilder) ToSQL() string {
 		i.insert.String(),
 		i.columns.String(),
 		i.values.String(),
+		i.onConflict.String(),
 		i.returning.String(),
 	}
 	return strings.Trim(strings.Join(expressions, " "), " ")

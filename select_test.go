@@ -19,7 +19,7 @@ func TestSelect(t *testing.T) {
 		For(LockModeUpdateNowait).
 		ToSQL()
 	re := regexp.MustCompile("\\s{2,}")
-	println(re.ReplaceAllString(sql, " "))
+	re.ReplaceAllString(sql, " ")
 	sqlE := "SELECT * FROM \"user\" AS u INNER JOIN address AS a ON a.user_id = u.id WHERE ((a.street LIKE '%brod%') AND (a.house > 12)) GROUP BY a.flat HAVING a.flat > 12 ORDER BY a.flat ASC FOR UPDATE NOWAIT"
 	if sqlE != re.ReplaceAllString(sql, " ") {
 		t.Error("Select failed")
